@@ -1,0 +1,43 @@
+
+BIN = lvgl_sample_audio_playback
+
+CFLAGS += -I${STAGING_INCDIR}/lvgl -I${STAGING_INCDIR}/lvgl/lv_drivers -DLV_CONF_INCLUDE_SIMPLE
+CFLAGS += -I${STAGING_INCDIR}/gstreamer-1.0 -I${STAGING_INCDIR}/glib-2.0 -I${STAGING_DIR_TARGET}/usr/lib64/glib-2.0/include
+LDFLAGS += -llvgl -llv_drivers -lwayland-client -lgstreamer-1.0 -lglib-2.0 -lgobject-2.0 -lpthread
+
+prefix ?= /usr
+bindir ?= $(prefix)/bin
+
+SRC_DIR := ./src
+
+MAIN := $(SRC_DIR)/main.c
+SRCS := $(shell find $(SRC_DIR) -name '*.c' ! -name 'main.c')
+
+MAINOBJ = $(MAIN:.c=.o)
+OBJS := $(SRCS:$(SRC_DIR)/%.c=$(SRC_DIR)/%.o)
+
+$(info CFLAGS: $(CFLAGS))
+$(info LDFLAGS: $(LDFLAGS))
+$(info SDKTARGETSYSROOT: ${SDKTARGETSYSROOT})
+$(info prefix: $(prefix))
+$(info bindir: $(bindir))
+
+
+.PHONY: all clean
+
+all: default
+
+%.o: %.c
+	@$(CC)  $(CFLAGS) -c $< -o $@
+
+default: $(OBJS) $(MAINOBJ)
+	$(CC) -o $(BIN) $(MAINOBJ) $(OBJS) $(LDFLAGS)
+
+clean: 
+	@echo "Cleaning ... "
+	rm -f $(BIN) $(MAINOBJ) $(OBJS)
+
+install:
+	install -d $(bindir)
+	install $(BIN) $(bindir)
+

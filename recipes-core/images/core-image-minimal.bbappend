@@ -1,0 +1,5 @@
+IMAGE_INSTALL_append = " hello"
+IMAGE_INSTALL_append = " myapp"
+IMAGE_INSTALL_append = " lvgl-example"
+IMAGE_INSTALL_append = " lvgl-audio-playback"
+IMAGE_INSTALL_append = " lvgl-video-playback"
